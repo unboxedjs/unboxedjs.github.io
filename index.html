@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UnboxedJS Blog Hub</title>
+    <style>
+        body { font-family: sans-serif; line-height: 1.6; max-width: 600px; margin: 40px auto; padding: 20px; }
+        .project-link { display: block; padding: 10px; border: 1px solid #ddd; margin-bottom: 10px; border-radius: 5px; text-decoration: none; color: #333; }
+        .project-link:hover { background-color: #f4f4f4; }
+    </style>
+</head>
+<body>
+    <h1>UnboxedJS Project Hub</h1>
+    <div id="project-list">Loading projects...</div>
+
+    <script>
+        const username = 'unboxedjs'; // Replace with your actual username
+        const listElement = document.getElementById('project-list');
+
+        async function fetchRepos() {
+            try {
+                const response = await fetch(`https://api.github.com/users/${username}/repos?sort=updated`);
+                const repos = await response.json();
+                
+                // Filter to only show repos that have Pages enabled
+                const pagesRepos = repos.filter(repo => repo.has_pages && repo.name !== `${username}.github.io`);
+
+                listElement.innerHTML = pagesRepos.map(repo => `
+                    <a class="project-link" href="/${repo.name}">
+                        <strong>${repo.name}</strong><br>
+                        <small>${repo.description || 'No description available'}</small>
+                    </a>
+                `).join('');
+            } catch (error) {
+                listElement.innerHTML = 'Error loading projects.';
+            }
+        }
+        fetchRepos();
+    </script>
+</body>
+</html>
