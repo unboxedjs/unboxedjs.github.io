@@ -1,0 +1,61 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Posts collection
+    match /posts/{postId} {
+      // Anyone can read posts (filtering done in queries)
+      allow read: if true;
+
+      // Allow creating posts with required fields
+      allow create: if request.resource.data.keys().hasAll(['title', 'content', 'author'])
+        && request.resource.data.title is string
+        && request.resource.data.content is string
+        && request.resource.data.author is string;
+
+      // Allow updates (for counters and post edits)
+      allow update: if true;
+
+      // Allow delete
+      allow delete: if true;
+    }
+
+    // Likes collection
+    match /likes/{likeId} {
+      // Anyone can read likes
+      allow read: if true;
+
+      // Anyone can create a like (with validation)
+      allow create: if request.resource.data.keys().hasAll(['postId', 'visitorId'])
+        && request.resource.data.postId is string
+        && request.resource.data.visitorId is string;
+
+      // Anyone can delete their own like (by visitorId match)
+      allow delete: if true;
+    }
+
+    // Comments collection
+    match /comments/{commentId} {
+      // Anyone can read comments (filtering done in queries)
+      allow read: if true;
+
+      // Anyone can create a comment (with validation)
+      allow create: if request.resource.data.keys().hasAll(['postId', 'author', 'content'])
+        && request.resource.data.postId is string
+        && request.resource.data.author is string
+        && request.resource.data.content is string
+        && request.resource.data.content.size() > 0
+        && request.resource.data.content.size() <= 2000;
+
+      // Allow update (for approving) and delete
+      allow update, delete: if true;
+    }
+
+    // Settings collection (for ad settings, etc.)
+    match /settings/{docId} {
+      allow read: if true;
+      allow write: if true;
+    }
+  }
+}

@@ -1,0 +1,45 @@
+name: Update GitHub Projects JSON
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * 0'  # Weekly on Sunday at midnight
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Fetch GitHub repos and generate gh-blogs.json
+        run: |
+          curl -s "https://api.github.com/users/unboxedjs/repos?per_page=100" | \
+          jq '[.[] | select(.has_pages == true and .name != "unboxedjs.github.io") | {
+            name: .name,
+            description: .description,
+            language: .language,
+            topics: .topics,
+            updated: .updated_at
+          }] | sort_by(.updated) | reverse' > public/gh-blogs.json
+
+          # Show what was generated
+          echo "Generated gh-blogs.json:"
+          cat public/gh-blogs.json
+
+      - name: Commit and push changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add public/gh-blogs.json
+
+          # Only commit if there are changes
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "chore: update gh-blogs.json [skip ci]"
+            git push
+          fi

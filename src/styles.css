@@ -1,0 +1,29 @@
+/* You can add global styles to this file, and also import other style files */
+
+@import "tailwindcss";
+
+/* Custom Fonts */
+@font-face {
+  font-family: 'Sen';
+  src: url('/fonts/Sen-VariableFont_wght.ttf') format('truetype');
+  font-weight: 400 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Apply Sen to headings, nav, and card elements */
+.font-sub {
+  font-family: 'Sen', system-ui, sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Sen', system-ui, sans-serif;
+}
+
+nav, nav a {
+  font-family: 'Sen', system-ui, sans-serif;
+}
+
+blockquote {
+  font-family: 'Sen', system-ui, sans-serif;
+}

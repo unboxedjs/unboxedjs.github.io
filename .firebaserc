@@ -1,0 +1,14 @@
+{
+  "projects": {
+    "default": "unboxedjs-core"
+  },
+  "targets": {
+    "unboxedjs-core": {
+      "hosting": {
+        "blog-unboxedjs": [
+          "unboxedjs-core"
+        ]
+      }
+    }
+  }
+}
