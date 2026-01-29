@@ -8,11 +8,13 @@ import type { Post, CreatePostDto } from '../models/post.model';
 const COLLECTION = 'posts';
 
 interface GhBlog {
+  slug: string;
   name: string;
-  description: string | null;
+  description: string;
   language: string | null;
   topics: string[];
   updated: string;
+  image: string;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -90,12 +92,12 @@ export class BlogService {
   private ghBlogToPost(blog: GhBlog): Post {
     const updatedDate = new Date(blog.updated);
     return {
-      id: `gh-${blog.name}`,
-      title: blog.name.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()),
-      slug: blog.name,
-      description: blog.description ?? 'A GitHub-hosted blog project',
+      id: `gh-${blog.slug}`,
+      title: blog.name,
+      slug: blog.slug,
+      description: blog.description,
       content: '',
-      coverImage: '',
+      coverImage: blog.image,
       images: [],
       tags: blog.topics.length > 0 ? blog.topics : (blog.language ? [blog.language.toLowerCase()] : []),
       category: blog.language ?? 'Project',
@@ -107,7 +109,7 @@ export class BlogService {
       createdAt: Timestamp.fromDate(updatedDate),
       updatedAt: Timestamp.fromDate(updatedDate),
       source: 'github',
-      externalUrl: `/${blog.name}/`,
+      externalUrl: `/${blog.slug}/`,
     };
   }
 

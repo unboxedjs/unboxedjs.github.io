@@ -1,9 +1,22 @@
 [
   {
-    "name": "compare-2026",
-    "description": "Interactive comparison tool",
+    "slug": "compare-2026",
+    "name": "Clash of Techs",
+    "description": "Modern development balances a fierce competition between versatile, cross-platform user interface ecosystems and high-performance, scalable server architectures to deliver seamless digital experiences.",
     "language": "JavaScript",
-    "topics": ["javascript", "tools"],
-    "updated": "2026-01-26T16:34:41Z"
+    "topics": [
+      "angular",
+      "dotnetcore",
+      "fastapi",
+      "flutter",
+      "gin-gonic",
+      "nestjs",
+      "nextjs",
+      "react",
+      "springboot",
+      "svelte"
+    ],
+    "updated": "2026-01-29T15:18:37Z",
+    "image": "https://repository-images.githubusercontent.com/1136364220/2330b20c-88fc-4339-852e-623be6762309"
   }
 ]

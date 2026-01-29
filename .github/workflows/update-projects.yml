@@ -16,15 +16,34 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Fetch GitHub repos and generate gh-blogs.json
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
-          curl -s "https://api.github.com/users/unboxedjs/repos?per_page=100" | \
-          jq '[.[] | select(.has_pages == true and .name != "unboxedjs.github.io") | {
-            name: .name,
-            description: .description,
-            language: .language,
-            topics: .topics,
-            updated: .updated_at
-          }] | sort_by(.updated) | reverse' > public/gh-blogs.json
+          # Use GraphQL to get repos with openGraphImageUrl
+          gh api graphql -f query='
+            query {
+              user(login: "unboxedjs") {
+                repositories(first: 100, orderBy: {field: UPDATED_AT, direction: DESC}) {
+                  nodes {
+                    name
+                    description
+                    primaryLanguage { name }
+                    repositoryTopics(first: 10) { nodes { topic { name } } }
+                    updatedAt
+                    openGraphImageUrl
+                  }
+                }
+              }
+            }
+          ' | jq '[.data.user.repositories.nodes[] | select(.name != "unboxedjs.github.io" and .description and (.description | contains("|"))) | {
+            slug: .name,
+            name: (.description | split("|")[0] | gsub("^\\s+|\\s+$"; "")),
+            description: (.description | split("|")[1] | gsub("^\\s+|\\s+$"; "")),
+            language: (.primaryLanguage.name // null),
+            topics: [.repositoryTopics.nodes[].topic.name],
+            updated: .updatedAt,
+            image: .openGraphImageUrl
+          }]' > public/gh-blogs.json
 
           # Show what was generated
           echo "Generated gh-blogs.json:"

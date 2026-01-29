@@ -16,7 +16,10 @@
       "Bash(dir \"C:\\\\Users\\\\suren\\\\codebase\\\\personal\\\\unboxedjs.github.io\\\\public\\\\fonts\")",
       "Bash(npx firebase deploy --only firestore:rules)",
       "Bash(firebase deploy:*)",
-      "Bash(firebase projects:list:*)"
+      "Bash(firebase projects:list:*)",
+      "Bash(gh api:*)",
+      "Bash(where:*)",
+      "Bash(node:*)"
     ]
   }
 }
